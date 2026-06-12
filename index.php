@@ -8,28 +8,28 @@ include 'includes/transactionTable.php';
 
 //Controleer of post is geset
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Gebruikersnaam en wachtwoord uit post halen
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // kwetsbaar voor SQL injectie
-    $sql = "SELECT * FROM user WHERE username = '$username' AND password = '$password'";
-    $result = $pdo->query($sql);
-    $user = $result->fetch();
+    // SQL injectie opgelost met prepared statement
+    $sql = "SELECT * FROM user WHERE username = :username AND password = :password";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':username' => $username,
+        ':password' => $password
+    ]);
+    $user = $stmt->fetch();
 
-    // Controleer of er een rij is gevonden
-    if($result->rowCount() > 0) {
-        // Gebruiker is ingelogd
+    if($user) {
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username;
         $_SESSION['user'] = $user;
 
         header("location: dashboard.php");
+        exit;
     } else {
-        // Gebruiker is niet ingelogd
         $error = "Gebruikersnaam of wachtwoord is onjuist";
     }
-
 }
 
 ?>
@@ -51,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <img src="img/Omanido1.png" alt="Omanido Logo" class="mb-6 w-1/2"> <!-- Aanpassen van de breedte naar 1/2 van de container -->
         </div>
         <h2 class="text-lg text-center font-bold mb-6">Inloggen bij Omanido</h2>
-        <form action="<? echo htmlspecialchars($_SERVER["PHP_SELF"]);  ?>" method="post">
+       <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="mb-4">
                 <label for="username" class="block text-sm font-medium text-gray-700">Gebruikersnaam:</label>
                 <input type="text" id="username" name="username" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
