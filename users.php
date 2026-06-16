@@ -7,9 +7,14 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
     exit;
 }
 
-// show users
+// Alleen admins mogen alle gebruikers zien
+if ($_SESSION['user']['isAdmin'] != 1) {
+    header("location: dashboard.php");
+    exit;
+}
 
-$stmt = $pdo->prepare("SELECT * FROM user");
+// show users
+$stmt = $pdo->prepare("SELECT id, username, balance FROM user");
 $stmt->execute();
 $users = $stmt->fetchAll();
 ?>
@@ -20,13 +25,12 @@ $users = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gebruikers | Omanido</title>
-    <!-- Voeg Tailwind CSS toe via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
 <?php include 'includes/header.php'; ?>
+
 <div class="container mx-auto mt-20 p-6 bg-white shadow-md rounded-md">
-    <?php //show users ?>
     <h2 class="text-lg text-center font-bold mb-6">Gebruikers</h2>
     <table class="w-full">
         <thead>
@@ -39,12 +43,18 @@ $users = $stmt->fetchAll();
         <tbody>
         <?php foreach ($users as $user): ?>
             <tr>
-                <td class="border-b p-2"><?= $user['id'] ?></td>
-               <td class="border-b p-2"><a href="transacties.php?id=<?= $user['id'] ?>"><?= $user['username'] ?></a></td>
+                <td class="border-b p-2"><?= htmlspecialchars($user['id'], ENT_QUOTES, 'UTF-8') ?></td>
+                <td class="border-b p-2">
+                    <a href="transacties.php?id=<?= htmlspecialchars($user['id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?>
+                    </a>
+                </td>
                 <td class="border-b p-2">€<?= number_format($user['balance'], 2, ',', '.') ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
+    </table>
 </div>
-</body>
 
+</body>
+</html>
