@@ -8,8 +8,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $passwordcheck = $_POST['passwordcheck'];
 
     if ($password == $passwordcheck) {
-        $stmt = $pdo->prepare("SELECT * FROM user WHERE username = ?");
-        $stmt->execute([$username]);
+   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+$stmt = $pdo->prepare("INSERT INTO user (username, password, balance, isAdmin) VALUES (?, ?, 100, 0)");
+$stmt->execute([$username, $hashedPassword]);
 
         if ($stmt->rowCount() == 0) {
             $stmt = $pdo->prepare("INSERT INTO user (username, password, balance, isAdmin) VALUES (?, ?, 100, 0)");

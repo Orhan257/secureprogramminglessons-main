@@ -9,15 +9,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM user WHERE username = :username AND password = :password";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        ':username' => $username,
-        ':password' => $password
-    ]);
-    $user = $stmt->fetch();
+$sql = "SELECT * FROM user WHERE username = :username";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    ':username' => $username
+]);
+$user = $stmt->fetch();
 
-    if($user) {
+if ($user && password_verify($password, $user['password'])) {
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username;
         $_SESSION['user'] = $user;
