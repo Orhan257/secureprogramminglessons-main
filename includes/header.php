@@ -1,5 +1,4 @@
 <?php
-// Controleer of de gebruiker is ingelogd
 if (isset($_SESSION['loggedin'])) {
     $username = $_SESSION['user']['username'];
     $userId = $_SESSION['user']['id'];
@@ -11,10 +10,15 @@ if (isset($_SESSION['loggedin'])) {
         <a href="<?= isset($_SESSION['loggedin']) ? 'dashboard.php' : 'index.php' ?>">
             <img src="../img/Omanido2.png" alt="Bank Logo" class="h-12">
         </a>
+
         <?php if (isset($_SESSION['loggedin'])): ?>
             <div class="text-right">
-                <p class="text-gray-500 text-sm">Welkom,  <a href="transacties.php?id=<?= $userId ?>" class="text-blue-600 hover:underline"><?= $username ?></a></p>
-               
+                <p class="text-gray-500 text-sm">
+                    Welkom,
+                    <a href="transacties.php" class="text-blue-600 hover:underline">
+                        <?= htmlspecialchars($username, ENT_QUOTES, 'UTF-8') ?>
+                    </a>
+                </p>
             </div>
         <?php endif; ?>
     </div>

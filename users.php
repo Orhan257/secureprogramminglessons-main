@@ -45,9 +45,7 @@ $users = $stmt->fetchAll();
             <tr>
                 <td class="border-b p-2"><?= htmlspecialchars($user['id'], ENT_QUOTES, 'UTF-8') ?></td>
                 <td class="border-b p-2">
-                    <a href="transacties.php?id=<?= htmlspecialchars($user['id'], ENT_QUOTES, 'UTF-8') ?>">
-                        <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?>
-                    </a>
+                   <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?>
                 </td>
                 <td class="border-b p-2">€<?= number_format($user['balance'], 2, ',', '.') ?></td>
             </tr>
